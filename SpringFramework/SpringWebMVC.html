@@ -1,0 +1,135 @@
+<html lang="ja">
+<head>
+    <title>SpringWebMVC</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- base -->
+    <style>
+        body {
+            padding: 10px;
+            background: white;
+        }
+    </style>
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/css/uikit.min.css"/>
+
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit-icons.min.js"></script>
+
+    <!-- for prettyprint -->
+    <style>
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8 {
+            list-style-type: decimal !important;
+        }
+    </style>
+    <style>
+        pre {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background-color: #f5f7f9;
+        }
+
+        .prettyprint {
+            font-family: Menlo, "Bitstream Vera Sans Mono", "DejaVu Sans Mono", Monaco, Consolas, monospace;
+            font-size: 0.85em;
+            border: 0 !important;
+        }
+
+        .pln {
+            color: black;
+        }
+
+        ol.linenums {
+            margin-top: 0;
+            margin-bottom: 0;
+            background-color: #f5f7f9;
+            color: black;
+        }
+
+        li.L0,
+        li.L1,
+        li.L2,
+        li.L3,
+        li.L4,
+        li.L5,
+        li.L6,
+        li.L7,
+        li.L8,
+        li.L9 {
+            padding-left: 1em;
+            background-color: #f5f7f9;
+            list-style-type: decimal;
+        }
+
+        @media screen {
+            .str,
+            .kwd,
+            .com,
+            .typ,
+            .lit,
+            .pun,
+            .opn,
+            .clo,
+            .tag,
+            .atn,
+            .atv,
+            .dec,
+            .var,
+            .fun {
+                color: black;
+            }
+        }</style>
+</head>
+<body>
+<h1 id="Spring Web MVC" class="uk-heading-line"><span>Spring Web MVC</span></h1><h1 id="HelloWorld" class="uk-heading-line"><span>HelloWorld</span></h1><p><strong>更新日：2019.07.16</strong></p>
+<p>Spring Framework の公式サイトには Guides というページがあって、いろいろなチュートリアルが載っている。その中に、Spring Web MVC を使ってウェブコンテンツを作ってみるものがあったのでやってみた。チュートリアルでは基本的なものが出来上がってるソースから始めるパターンと、フルスクラッチで作成するパターンがあるが今回はフルスクラッチで作っていく。</p>
+<p>まずプロジェクトの作成だが、Gradle、Maven、IDEのどれかを使用して作成することができる。今回はGradleを使ってIntelliJで作成していく。</p>
+<p>手順に沿って作成したら以下の <code>build.gradle</code> になった。</p>
+<pre><code class="prettyprint linenums">buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath(&quot;org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE&quot;)
+    }
+}
+
+apply plugin: &#x27;java&#x27;
+apply plugin: &#x27;idea&#x27;
+apply plugin: &#x27;org.springframework.boot&#x27;
+apply plugin: &#x27;io.spring.dependency-management&#x27;
+
+bootJar {
+    baseName = &#x27;gs-serving-web-content&#x27;
+    version = &#x27;0.1.0&#x27;
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    implementation &quot;org.springframework.boot:spring-boot-starter-web&quot;
+    implementation &quot;org.springframework.boot:spring-boot-starter-thymeleaf&quot;
+    implementation &quot;org.springframework.boot:spring-boot-devtools&quot;
+    testCompile group: &#x27;junit&#x27;, name: &#x27;junit&#x27;, version: &#x27;4.12&#x27;
+}</code></pre><p>Spring Boot gradle plugin を使用しているが、これはいくつかの便利な機能が含まれているらしい。</p>
+<ul>
+<li>クラスパスに含まれるJARを集めて、実行可能JARをビルドする</li>
+<li><code>public static void main()</code> を探し出し実行クラスとしてフラグを付与する</li>
+<li>Spring Boot のバージョンに合わせた依存解決を行う</li>
+</ul>
+<p>詳しくは以下のページに載っているのであとでまとめてみようと思う。</p>
+<ul>
+<li><a href="https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/html/">Spring Boot gradle plugin</a></li>
+</ul>
+
+</body>
+</html>
