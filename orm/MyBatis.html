@@ -1,0 +1,224 @@
+<html lang="ja">
+<head>
+    <title>MyBatis</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- base -->
+    <style>
+        body {
+            padding: 10px;
+            background: white;
+        }
+    </style>
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/css/uikit.min.css"/>
+
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit-icons.min.js"></script>
+
+    <!-- for prettyprint -->
+    <style>
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8 {
+            list-style-type: decimal !important;
+        }
+    </style>
+    <style>
+        pre {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background-color: #f5f7f9;
+        }
+
+        .prettyprint {
+            font-family: Menlo, "Bitstream Vera Sans Mono", "DejaVu Sans Mono", Monaco, Consolas, monospace;
+            font-size: 0.85em;
+            border: 0 !important;
+        }
+
+        .pln {
+            color: black;
+        }
+
+        ol.linenums {
+            margin-top: 0;
+            margin-bottom: 0;
+            background-color: #f5f7f9;
+            color: black;
+        }
+
+        li.L0,
+        li.L1,
+        li.L2,
+        li.L3,
+        li.L4,
+        li.L5,
+        li.L6,
+        li.L7,
+        li.L8,
+        li.L9 {
+            padding-left: 1em;
+            background-color: #f5f7f9;
+            list-style-type: decimal;
+        }
+
+        @media screen {
+            .str,
+            .kwd,
+            .com,
+            .typ,
+            .lit,
+            .pun,
+            .opn,
+            .clo,
+            .tag,
+            .atn,
+            .atv,
+            .dec,
+            .var,
+            .fun {
+                color: black;
+            }
+        }</style>
+</head>
+<body>
+<h1 id="MyBatis" class="uk-heading-line"><span>MyBatis</span></h1><ul>
+<li><a href="#%E6%A6%82%E8%A6%81">概要</a> 2019.03.17</li>
+<li><a href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">設定ファイル</a> 2019.03.17</li>
+<li><a href="#mappedsqlstatement">MappedSQLStatement</a> 2019.03.17</li>
+</ul>
+<h2 id="概要" class="uk-heading-line uk-heading-bullet"><span>概要</span></h2><p>MyBatisはXMLにSQLを記述することでJavaとRDBとの相互変換を実現するライブラリ。MyBatis3からはアノテーションを使用することでマップを記述できるようになっている。</p>
+<h2 id="設定ファイル" class="uk-heading-line uk-heading-bullet"><span>設定ファイル</span></h2><p>MyBatisはXMLによって多くの設定を記述する。実際にコードからMyBatisを呼び出すときにはこの設定ファイルをロードする必要がある。</p>
+<p><a href="http://www.mybatis.org/mybatis-3/ja/configuration.html#mappers">MyBatis | 設定</a></p>
+<p>例えば以下のように記述する。</p>
+<pre><code class="prettyprint linenums">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration
+        PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+
+&lt;!-- 設定は必ず configuration の子要素になる --&gt;
+&lt;configuration&gt;
+    &lt;!-- 設定の内容を上書きするプロパティファイルを指定する。プロパティファイルの値は、このファイルから参照できる。 --&gt;
+    &lt;properties resource=&quot;mybatis.properties&quot;/&gt;
+    &lt;!-- Mapped SQL Statement で使用する型のエイリアス設定 --&gt;
+    &lt;typeAliases&gt;
+        &lt;typeAlias type=&quot;com.bookstore.scrum.domain.IceBoxItem&quot; alias=&quot;IceBoxItem&quot;/&gt;
+        &lt;typeAlias type=&quot;com.bookstore.scrum.domain.IceBoxItemId&quot; alias=&quot;IceBoxItemId&quot;/&gt;
+    &lt;/typeAliases&gt;
+    &lt;!-- DBの型とJavaの型を相互変換するハンドラ。独自に定義する場合はこのように明記する。 --&gt;
+    &lt;typeHandlers&gt;
+        &lt;package name=&quot;com.bookstore.scrum.repository.mybatis.typehandlers&quot;/&gt;
+    &lt;/typeHandlers&gt;
+    &lt;!-- 接続先DBの環境。複数持つことができ、開発環境、テスト環境、本番環境などで簡単に接続先を切り替えることができる。 --&gt;
+    &lt;environments default=&quot;development&quot;&gt;
+        &lt;environment id=&quot;development&quot;&gt;
+            &lt;transactionManager type=&quot;JDBC&quot;/&gt;
+            &lt;dataSource type=&quot;POOLED&quot;&gt;
+                &lt;!-- 上記のプロパティファイルから読み込んだ値を使用してDBとの接続設定を記述 --&gt;
+                &lt;property name=&quot;driver&quot; value=&quot;${driver}&quot;/&gt;
+                &lt;property name=&quot;url&quot; value=&quot;${url}&quot;/&gt;
+                &lt;property name=&quot;username&quot; value=&quot;${username}&quot;/&gt;
+                &lt;property name=&quot;password&quot; value=&quot;${password}&quot;/&gt;
+            &lt;/dataSource&gt;
+        &lt;/environment&gt;
+    &lt;/environments&gt;
+    &lt;!-- Mapped SQL Statement の定義 --&gt;
+    &lt;mappers&gt;
+        &lt;mapper resource=&quot;mapper/IceBoxItemMapper.xml&quot;/&gt;
+    &lt;/mappers&gt;
+&lt;/configuration&gt;</code></pre><p>この時読み込んでいるプロパティファイルはこんな感じになった。</p>
+<pre><code class="prettyprint linenums">driver=com.mysql.cj.jdbc.Driver
+url=jdbc:mysql://localhost:3306/scrum
+username=scrum
+password=scrum</code></pre><p>この場合、コード上では以下のように設定ファイルをロードする。</p>
+<pre><code class="prettyprint linenums">val configPath = &quot;mybatis-config.xml&quot;
+val sqlSessionFactory = SqlSessionFactoryBuilder().build(Resources.getResourceAsStream(configPath))</code></pre><hr>
+<h2 id="MappedSQLStatement" class="uk-heading-line uk-heading-bullet"><span>MappedSQLStatement</span></h2><p>Mapped SQL Statement が MyBatis の主要な機能になる。Mapped SQL Statement はXMLファイルによって記述されたJavaとDBとの相互変換定義のことで、コードでこれらのことを実現するより、簡単に相互変換を実現できるらしい。</p>
+<p><a href="http://www.mybatis.org/mybatis-3/ja/sqlmap-xml.html#Result_Maps">MyBatis | Mapper XML ファイル</a></p>
+<p><strong>select</strong></p>
+<p>DBからデータを取り出すマップを定義する。</p>
+<pre><code class="prettyprint linenums">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+        PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+        &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;!-- IDを指定してIceBoxItemというJavaのインスタンスを一つ取得するStatement --&gt;
+
+&lt;!-- Statement の名前空間 --&gt;
+&lt;mapper namespace=&quot;com.bookstore.scrum.repository.mybatis.mapper.IceBoxItemMapper&quot;&gt;
+    &lt;!-- parameterTypeでSQLの引数を、resultTypeで結果の型を定義する --&gt;
+    &lt;select id=&quot;selectIceBoxItem&quot; parameterType=&quot;String&quot; resultType=&quot;IceBoxItem&quot;&gt;
+        &lt;!-- 実際のSQL --&gt;
+        SELECT *
+        FROM iceboxitem
+        &lt;!-- #{ ... } は引数によって展開される --&gt;
+        WHERE id = #{id}
+    &lt;/select&gt;
+&lt;/mapper&gt;</code></pre><p>select要素によって、DBからデータを取り出す定義ができる。実際のSQLはselect要素の中に記述する。IntelliJ IDEA ではSQLを自動的に認識してシンタックスハイライトや補完などをしてくれた。素晴らしい。</p>
+<p>定義したXMLファイルは<a href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">設定ファイル</a>から読み込むことでコード上から呼び出すことができる。</p>
+<pre><code class="prettyprint linenums">    ...
+    &lt;!-- Mapped SQL Statement の定義 --&gt;
+    &lt;mappers&gt;
+        &lt;mapper resource=&quot;mapper/IceBoxItemMapper.xml&quot;/&gt;
+    &lt;/mappers&gt;
+    ...</code></pre><p>実際に上記の内容を呼び出してみた。DBの中身はいい感じにセットアップしてあるとして、他にも用意するものが必要になる。</p>
+<ul>
+<li>戻り値の型</li>
+<li>タイプハンドラ</li>
+</ul>
+<p>戻り値の型</p>
+<pre><code class="prettyprint linenums">// IceBoxItem.kt
+//
+// Entityクラスは特に関係ないクラス。
+//
+class IceBoxItem(iceBoxItemId: IceBoxItemId, val title: String, val description: String) :
+    Entity&lt;IceBoxItem&gt;(iceBoxItemId.rawId) {
+
+    fun toProductBacklogItem(priority: Priority, point: Point): ProductBacklogItem =
+        ProductBacklogItem(ProductBacklogItemId(&quot;dummy&quot;), title, description, priority, point)
+
+}
+
+// IceBoxItemId.kt
+class IceBoxItemId(val rawId: String)</code></pre><p>IceBoxItemのコンストラクタにIceBoxItemIdがあるため独自にハンドラを定義する必要がある。この場合はIdがVARCHARでDBに保存されているので、<code>IceBoxItemId &lt;--&gt; VARCHAR</code>のTypeHandlerを定義する。</p>
+<pre><code class="prettyprint linenums">// DB の VARCHAR と IceBoxItemId 型を相互変換する
+@Suppress(&quot;unused&quot;)
+@MappedJdbcTypes(JdbcType.VARCHAR)
+class IceBoxItemIdHandler : BaseTypeHandler&lt;IceBoxItemId&gt;() {
+
+    override fun setNonNullParameter(ps: PreparedStatement?, i: Int, parameter: IceBoxItemId?, jdbcType: JdbcType?) {
+        ps!!.setString(i, parameter!!.rawId)
+    }
+
+    override fun getNullableResult(rs: ResultSet?, columnName: String?): IceBoxItemId {
+        return IceBoxItemId(rs!!.getString(columnName))
+    }
+
+    override fun getNullableResult(rs: ResultSet?, columnIndex: Int): IceBoxItemId {
+        return IceBoxItemId(rs!!.getString(columnIndex))
+    }
+
+    override fun getNullableResult(cs: CallableStatement?, columnIndex: Int): IceBoxItemId {
+        return IceBoxItemId(cs!!.getString(columnIndex))
+    }
+
+}</code></pre><p>このTypeHandlerは<a href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">設定ファイル</a>によって明記する必要がある。</p>
+<pre><code class="prettyprint linenums">    ...
+    &lt;typeHandlers&gt;
+        &lt;!-- 以下のパッケージ内にあるハンドラを自動登録する --&gt;
+        &lt;package name=&quot;com.bookstore.scrum.repository.mybatis.typehandlers&quot;/&gt;
+    &lt;/typeHandlers&gt;
+    ...</code></pre><p>実際に呼び出してみよう。呼び出すときにはStatementの名前空間+IDのフルネームで Mapped SQL Statement を指定する。</p>
+<pre><code class="prettyprint linenums">sqlSessionFactory.openSession().let { session -&gt;
+    val iceBoxItem = session.selectOne&lt;IceBoxItem&gt;(&quot;com.bookstore.scrum.repository.mybatis.mapper.IceBoxItemMapper.selectIceBoxItem&quot;, &quot;10&quot;)
+    iceBoxItem.apply {
+        println(id)
+        println(title)
+        println(description)
+    }
+    session.close()
+}</code></pre>
+</body>
+</html>

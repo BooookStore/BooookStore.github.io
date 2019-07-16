@@ -1,0 +1,461 @@
+<html lang="ja">
+<head>
+    <title>Ktor</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- base -->
+    <style>
+        body {
+            padding: 10px;
+            background: white;
+        }
+    </style>
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/css/uikit.min.css"/>
+
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit-icons.min.js"></script>
+
+    <!-- for prettyprint -->
+    <style>
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8 {
+            list-style-type: decimal !important;
+        }
+    </style>
+    <style>
+        pre {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background-color: #f5f7f9;
+        }
+
+        .prettyprint {
+            font-family: Menlo, "Bitstream Vera Sans Mono", "DejaVu Sans Mono", Monaco, Consolas, monospace;
+            font-size: 0.85em;
+            border: 0 !important;
+        }
+
+        .pln {
+            color: black;
+        }
+
+        ol.linenums {
+            margin-top: 0;
+            margin-bottom: 0;
+            background-color: #f5f7f9;
+            color: black;
+        }
+
+        li.L0,
+        li.L1,
+        li.L2,
+        li.L3,
+        li.L4,
+        li.L5,
+        li.L6,
+        li.L7,
+        li.L8,
+        li.L9 {
+            padding-left: 1em;
+            background-color: #f5f7f9;
+            list-style-type: decimal;
+        }
+
+        @media screen {
+            .str,
+            .kwd,
+            .com,
+            .typ,
+            .lit,
+            .pun,
+            .opn,
+            .clo,
+            .tag,
+            .atn,
+            .atv,
+            .dec,
+            .var,
+            .fun {
+                color: black;
+            }
+        }</style>
+</head>
+<body>
+<h1 id="Ktor" class="uk-heading-line"><span>Ktor</span></h1><p>KtorはKotlinを使用して非同期サーバまたは非同期Webクライアントを構築できるフレームワーク。</p>
+<p><a href="https://ktor.io">Ktor | 公式</a></p>
+<ul>
+<li><a href="#%E6%A6%82%E8%A6%81">概要</a> 2019.02.24</li>
+</ul>
+<p><strong><a href="#%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC">サーバー</a></strong></p>
+<ul>
+<li><a href="#helloworld">helloworld</a> 2019.02.23</li>
+<li><a href="#%E3%83%AB%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0">ルーティング</a> 2019.02.23</li>
+<li><a href="#%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%82%BB%E3%83%97%E3%82%BF%E3%83%BC">インターセプター</a> 2019.02.24</li>
+<li><a href="#applicationcall">applicationcall</a> 2019.02.28<ul>
+<li><a href="#request">request</a> 2019.02.28</li>
+<li><a href="#response">response</a> 2019.03.01</li>
+</ul>
+</li>
+</ul>
+<h1 id="概要" class="uk-heading-line"><span>概要</span></h1><p>Ktorは様々なアプリケーションを相互接続することを目的として作られたKotlinフレームワーク。基本的にはHTTPによる相互接続になっておりサーバーとクライアントの機能を提供している。KotlinのCoroutineを使っているので非同期で処理を実行することができるのが特徴。Kotlinのマルチプラットフォーム対応にも対応しているのでJavaScriptやiOS,Android環境でも動作することができるらしい。</p>
+<p>使用したバージョン</p>
+<ul>
+<li>Kotlin Version : 1.3.20</li>
+<li>Ktor Version : 1.1.2</li>
+</ul>
+<h1 id="サーバー" class="uk-heading-line"><span>サーバー</span></h1><h2 id="helloworld" class="uk-heading-line uk-heading-bullet"><span>helloworld</span></h2><p>KtorlはIntelliJのプラグインを使用することで簡単にHello,Worldプロジェクトを作成できる。ちなみに、作成されたプロジェクトはデフォルトでGradleプロジェクトになっている。</p>
+<p>デフォルトで以下のファイルが作成される。 <code>src/Application.kt</code>はエントリーポイントになる。</p>
+<pre><code class="prettyprint linenums">HelloWorld
+├── build.gradle
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradle.properties
+├── gradlew
+├── gradlew.bat
+├── resources
+│   ├── application.conf
+│   └── logback.xml
+├── settings.gradle
+└── src
+    └── Application.kt</code></pre><p><strong>Application.kt</strong></p>
+<p>サーバーのエントリーポイントに当たるファイル。プロジェクトを作成した段階では以下のような内容になる。</p>
+<pre><code class="prettyprint linenums">// Application.kt
+package com.example.ktor
+
+import io.ktor.application.Application
+
+fun main(args: Array&lt;String&gt;): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+@Suppress(&quot;unused&quot;) // Referenced in application.conf
+@kotlin.jvm.JvmOverloads
+fun Application.module(testing: Boolean = false) {
+}</code></pre><p><code>main</code>関数が定義されているので、この関数を呼び出すことでサーバーを起動することができるが、<code>resource/application.conf</code>を使用してアプリケーションを起動する方法もある。<code>conf</code>ファイルを使用して起動した方が、アプリケーションに関する設定値をソースファイルから分離することができる。デフォルトでは以下の内容が生成される。</p>
+<pre><code class="prettyprint linenums">// application.conf
+ktor {
+    deployment {
+        port = 8080
+        port = ${?PORT}
+    }
+    application {
+        modules = [ com.example.ktor.ApplicationKt.module ]
+    }
+}</code></pre><p>IntelliJで<code>conf</code>ファイルを使用するには<code>build.gradle</code>ファイルに以下の行を追加し（IntelliJ プラグインでプロジェクトを作成した場合はデフォルトで出力されていた）Run -&gt; Edit Configurations でKotlinのMainClassを<code>io.ktor.server.netty.EngineMain</code>にして実行する。</p>
+<pre><code class="prettyprint linenums">apply plugin: &#x27;application&#x27;
+
+...
+
+mainClassName = &quot;io.ktor.server.netty.EngineMain&quot;</code></pre><p>ただ、デフォルトの内容でサーバーを起動してもエンドポイントが作成されていないのでアクセスできない。エンドポイントを以下のように追加することで、&quot;Hello, World&quot;を返すサーバーになる。</p>
+<pre><code class="prettyprint linenums">// application.conf
+package com.example.ktor
+
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.http.ContentType
+import io.ktor.response.respondText
+import io.ktor.routing.get
+import io.ktor.routing.routing
+
+fun main(args: Array&lt;String&gt;): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+@Suppress(&quot;unused&quot;) // Referenced in application.conf
+@kotlin.jvm.JvmOverloads
+fun Application.module(testing: Boolean = false) {
+    routing {
+        get(&quot;/&quot;) {
+            call.respondText(&quot;Hello World!&quot;, ContentType.Text.Plain)
+        }
+    }
+}</code></pre><p>Gradleに関するファイルは以下の通りで生成されている。</p>
+<p><strong>gradle.properties</strong></p>
+<pre><code class="prettyprint linenums">ktor_version=1.1.2
+kotlin.code.style=official
+kotlin_version=1.3.20
+logback_version=1.2.1</code></pre><p><strong>build.gradle</strong></p>
+<pre><code class="prettyprint linenums">buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath &quot;org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version&quot;
+    }
+}
+
+apply plugin: &#x27;kotlin&#x27;
+apply plugin: &#x27;application&#x27;
+
+group &#x27;helloworld&#x27;
+version &#x27;0.0.1&#x27;
+mainClassName = &quot;io.ktor.server.netty.EngineMain&quot;
+
+sourceSets {
+    main.kotlin.srcDirs = main.java.srcDirs = [&#x27;src&#x27;]
+    test.kotlin.srcDirs = test.java.srcDirs = [&#x27;test&#x27;]
+    main.resources.srcDirs = [&#x27;resources&#x27;]
+    test.resources.srcDirs = [&#x27;testresources&#x27;]
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+dependencies {
+    compile &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version&quot;
+    compile &quot;io.ktor:ktor-server-netty:$ktor_version&quot;
+    compile &quot;ch.qos.logback:logback-classic:$logback_version&quot;
+    testCompile &quot;io.ktor:ktor-server-tests:$ktor_version&quot;
+}</code></pre><h2 id="ルーティング" class="uk-heading-line uk-heading-bullet"><span>ルーティング</span></h2><p>KtorはKotlinのDSLを使って直感的にルーティングを行うことができる。ルーティングは木構造で定義することができ、リクエストがルーティングの条件と一致するまで再帰的に処理が遷移する。</p>
+<p>例えば、以下のように書くことでルーティングを定義できる。基本的には<code>route</code>でパスを組み立て、<code>param, header, method</code>でリクエストの条件を指定し、<code>get, post, delete, put</code>を使用してエンドポイントの定義かつハンドラーの実装を行う感じ。</p>
+<pre><code class="prettyprint linenums">package com.example.ktor
+
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.response.respondText
+import io.ktor.routing.*
+
+fun main(args: Array&lt;String&gt;): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+@Suppress(&quot;unused&quot;) // Referenced in application.conf
+@kotlin.jvm.JvmOverloads
+fun Application.module(testing: Boolean = false) {
+    // ルーティング
+    routing {
+        // routeでパスを組み立てる
+        route(&quot;a&quot;) {
+            // get, post, delete, putでエンドポイントを定義しハンドラーを実装できる
+            get {
+                call.respondText(&quot;GET a&quot;)
+            }
+            // headerでヘッダーに対する条件を指定できる
+            header(&quot;name&quot;, &quot;bookstore&quot;) {
+                get {
+                    call.respondText(&quot;GET a/b : has query parameter [name] value [bookstore]&quot;)
+                }
+            }
+            // routeは入れ子にすることで階層構造にすることができる
+            route(&quot;b&quot;) {
+                // paramでリクエストパラメータに対する条件を指定できる
+                param(&quot;name&quot;) {
+                    // get, post, delete, putにパスを指定することも可能
+                    get(&quot;c&quot;) {
+                        call.respondText(&quot;GET a/b/c : has query parameter [name]&quot;)
+                    }
+                }
+            }
+            // { ... } を使うことでリクエストパスに含まれるパラメータを取得できる
+            get(&quot;e/{username}&quot;) {
+                call.respondText(&quot;GET a/b/c/d/e : has path parameter ${call.parameters[&quot;username&quot;]}&quot;)
+            }
+        }
+    }
+}</code></pre><h3 id="パスパラメータ" class="uk-heading-bullet">パスパラメータ</h3><p>リクエストパスにパラメータを含めることができる。パラメーターは<code>String</code>としてハンドラの中で参照することができる。</p>
+<pre><code class="prettyprint linenums">// パスの一部を { ... } で区切ることでパスにパラメータを含めることができる。
+
+// リクエストパス：login/fogefoge レスポンス：fogefoge
+get(&quot;login/{username}&quot;) {
+    call.respondText(call.parameters[&quot;username&quot;] ?: &quot;error&quot;)
+}
+
+// リクエストパス：login/bookstore/infomation/10 レスポンス：bookstore , 10
+get(&quot;login/{username}/infomation/{pagenumber}&quot;) {
+    call.respondText(&quot;${call.parameters[&quot;username&quot;]} , ${call.parameters[&quot;pagenumber&quot;]}&quot;)
+}</code></pre><p>パスに含めるパラメータは上の例の他にも、以下のように定義することができる。</p>
+<table class="uk-table uk-table-divider"><tr>
+<th align="left">書き方</th>
+<th align="left">内容</th>
+</tr>
+<tr>
+<td align="left"><code>{param?}</code></td>
+<td align="left">オプションのパラメータ。あってもなくても良い。ある場合は値を指定した名前（例ではparam）で取得できる。</td>
+</tr>
+<tr>
+<td align="left"><code>*</code></td>
+<td align="left">ワイルドカード。全てのパラメータに一致する。空白不可。</td>
+</tr>
+<tr>
+<td align="left"><code>{...}</code></td>
+<td align="left">テイルカード。URI全体に一致する。一番最後に書く必要がある。空白可。</td>
+</tr>
+<tr>
+<td align="left"><code>{param...}</code></td>
+<td align="left">テイルカード。URI全体に一致する。一番最後に書く必要がある。空白可。指定した名前（例ではparam）で取得できる。</td>
+</tr>
+</table><p>実際に書いてみると以下のようになる。注意して欲しいのはワイルドカードとテイルカードの微妙な違い。ワイルドカードの場合、パスパラメータに何もなければ404になり一致しない。一方、テイルカードはパスパラメータに何もなくても一致する。</p>
+<pre><code class="prettyprint linenums">// リクエストパス：login/optional/fogefoge レスポンス：fogefoge
+// リクエストパス：login/optional レスポンス：no name
+get(&quot;login/optional/{username?}&quot;) {
+    call.respondText(call.parameters[&quot;username&quot;] ?: &quot;no name&quot;)
+}
+
+// リクエストパス：login/wildcard/fogefoge レスポンス：wildcard
+// リクエストパス：login/wildcard レスポンス：(404 not found)
+get(&quot;login/wildcard/*&quot;) {
+    call.respondText(&quot;wildcard&quot;)
+}
+
+// リクエストパス：login/tailcard/fogefoge レスポンス：Tailcard
+// リクエストパス：login/tailcard/fogefoge/foge レスポンス：Tailcard
+// リクエストパス：login/tailcard レスポンス：Tailcard
+get(&quot;login/tailcard/{...}&quot;) {
+    call.respondText(&quot;Tailcard&quot;)
+}
+
+// リクエストパス：login/tailcard_capture/fogefoge レスポンス：[fogefoge]
+// リクエストパス：login/tailcard_capture/fogefoge/foge レスポンス：[fogefoge, foge]
+// リクエストパス：login/tailcard_capture_capture レスポンス：[]
+get(&quot;login/tailcard_capture/{usernames...}&quot;) {
+    val all: List&lt;String&gt;? = call.parameters.getAll(&quot;usernames&quot;)
+    call.respondText(all.toString())
+}</code></pre><h2 id="インターセプター" class="uk-heading-line uk-heading-bullet"><span>インターセプター</span></h2><p>ハンドラの処理の前に特定の処理を割り込ませることができる。</p>
+<pre><code class="prettyprint linenums">route(&quot;admin/{loginInfo}&quot;) {
+    // intercept関数でインターセプターを定義できる。
+    // 後続のハンドラに処理が遷移する前に必ず実行される。
+   intercept(ApplicationCallPipeline.Features) {
+       // インターセプター内でパスパラメータを参照できる。
+       val loginInfo = call.parameters[&quot;loginInfo&quot;]
+       // パスパラメータが期待と一致しなければリクエストを弾く
+       if (loginInfo != &quot;bookstore&quot;) {
+           call.respond(HttpStatusCode.NotAcceptable)
+
+           // 後続の処理を実行したくない場合や、インターセプター内でクライアントにレスポンスを送った場合
+           // 以下の様にすることで処理を終了できる。
+           return@intercept finish()
+       }
+   }
+    get {
+        call.respondText(&quot;intercept&quot;)
+    }
+}</code></pre><p>インターセプター内でレスポンスを送った場合は<code>return@intercept finish()</code>を実行しないと、後続のハンドラが実行されレスポンスを２回送ろうとして以下の様に例外が発生する。</p>
+<pre><code class="prettyprint linenums">2019-02-24 19:41:27.709 [nettyCallPool-4-1] ERROR Application - 406 Not Acceptable: GET - /admin/bookstor io.ktor.server.engine.BaseApplicationResponse$ResponseAlreadySentException: Response has already been sent
+    at io.ktor.server.engine.BaseApplicationResponse.commitHeaders(BaseApplicationResponse.kt:40)
+    (以下略)</code></pre><p><code>intercept</code>関数は第一引数に<code>PipelinePhase</code>を、第二引数に割り込み処理のラムダを受け取る。<code>PipelinePhase</code>はフェーズの名前を表現するクラスでインターセプターを作る場合には<code>ApplicationCallPipeline.Features</code>が使われる。</p>
+<h2 id="applicationcall" class="uk-heading-line uk-heading-bullet"><span>applicationcall</span></h2><p>ハンドラやインターセプターにおいて<code>ApplicationCall</code>を取得する事が出来る。<code>ApplicationCall</code>はKtorにとってとても重要なクラスで、ほとんどの機能はこのクラスによって実現されているらしい。</p>
+<pre><code class="prettyprint linenums">get {
+    // call によって ApplicationCall のインスタンスを取得することができる。
+    call.respondText(&quot;Hello, World&quot;)
+}</code></pre><p><a href="https://github.com/ktorio/ktor/blob/master/ktor-server/ktor-server-core/jvm/src/io/ktor/application/ApplicationCall.kt">ApplicationCall | GitHub</a></p>
+<h3 id="request" class="uk-heading-bullet">request</h3><p><code>request</code>はその名前の通り、リクエストに関する情報。<code>ApplicationCall</code>を通じてアクセスすることができる。</p>
+<p>ハンドラやインターセプター内で取得することができる。取得するには<code>call.request</code>と呼び出せば良い。例えばこの様にアクセスできる。</p>
+<pre><code class="prettyprint linenums">get(&quot;/&quot;) {
+    // request からリクエストの情報を取得することができる
+    val uri: String = call.request.uri
+    val headers: Headers = call.request.headers
+    val cookies: RequestCookies = call.request.cookies
+    val httpMethod: HttpMethod = call.request.httpMethod
+
+    // 内部のコンテキストも取得することができる
+    val pipeline: ApplicationReceivePipeline = call.request.pipeline
+}</code></pre><h4 id="リクエストパラメーター" class="uk-heading-bullet">リクエストパラメーター</h4><p><code>request.queryParameters</code>とすることでクエリパラメータにアクセスできる。例えば、<code>?param1=value1&amp;param2=value2</code>というクエリパラメータがあった場合、それぞれコレクションの様に保持され以下の様にアクセスできる。当然ながら、該当するクエリパラメータがない場合もあるので、戻り値はNull許容型になる。</p>
+<pre><code class="prettyprint linenums">get(&quot;/&quot;) {
+    val value1: String? = call.request.queryParameters[&quot;param1&quot;]
+}</code></pre><p>複数のクエリパラメータをリストとして受け取る場合は<code>getAll</code>を使う。例えば<code>?param1=a&amp;param1=b&amp;param1=c</code>の様なクエリパラメータの場合、以下の様になる。</p>
+<pre><code class="prettyprint linenums">get(&quot;/&quot;) {
+    val value1 = call.request.queryParameters.getAll(&quot;param1&quot;)
+    print(value1) // [a, b, c]
+}</code></pre><h4 id="フォーム" class="uk-heading-bullet">フォーム</h4><p>フォーム値は<code>call.receiveParameters</code>として受け取ることができる。フォーム値は<code>String</code>のマップによって表現されているみたいで、クエリパラメータ同様<code>call.receiveParameters[&quot; フォーム値名 &quot;]</code>で取得可能。</p>
+<p>例えば以下の様に<code>name=bookstore</code> , <code>age=25</code>とPOSTすると...</p>
+<pre><code class="prettyprint linenums">POST / HTTP/1.1
+Host: localhost:8080
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+cache-control: no-cache
+Postman-Token: bc85d43d-5575-4aaf-b1bb-9b707d1ab012
+
+Content-Disposition: form-data; name=&quot;name&quot;
+
+bookstore
+
+Content-Disposition: form-data; name=&quot;age&quot;
+
+25
+------WebKitFormBoundary7MA4YWxkTrZu0gW--</code></pre><p>以下の様に取得できる。</p>
+<pre><code class="prettyprint linenums">post(&quot;/&quot;) {
+    val receiveParameters = call.receiveParameters()
+    val userName: String? = receiveParameters[&quot;name&quot;]
+    val userAge = receiveParameters[&quot;age&quot;]
+    call.respond(&quot;Hey $userName, your age is $userAge&quot;)
+}</code></pre><h3 id="response" class="uk-heading-bullet">response</h3><p><code>response</code>はレスポンスを表すインスタンス。このインスタンスを通じてクライアントに対してレスポンスを行う。</p>
+<p>例えば単純にテキストをクライアントに返すにはこうする。</p>
+<pre><code class="prettyprint linenums">get(&quot;/&quot;) {
+    call.respondText(&quot;Hello, I&#x60;am Ktor&quot;)
+}</code></pre><p>以下の様に書くこともできるが、通常は上記の様な便利な関数を使うだろう。ちなみに、コンテンツタイプをセットする機能は見当たらなかった。<code>response</code>では自動的にコンテンツタイプが付与される見たい。</p>
+<pre><code class="prettyprint linenums">get(&quot;/&quot;) {
+    val applicationCall = call.response.call
+    call.response.status(HttpStatusCode.OK)
+    call.response.pipeline.execute(applicationCall, &quot;Hello, I&#x60;am Ktor&quot;)
+}</code></pre><p>ラムダを渡すことで非同期でレスポンスを返すこともできる。</p>
+<pre><code class="prettyprint linenums">get(&quot;/&quot;) {
+    call.respondText { 
+
+        // なんか長い処理...
+
+        &quot;Hello, I&#x60;am Ktor&quot;
+    }
+}</code></pre><p>他にもいろんな便利なメソッドが用意されている。</p>
+<table class="uk-table uk-table-divider"><tr>
+<th align="left">メソッド</th>
+<th align="left">内容</th>
+</tr>
+<tr>
+<td align="left"><code>status(HttpStatusCode.OK)</code></td>
+<td align="left">HTTPステータスコードを設定</td>
+</tr>
+<tr>
+<td align="left"><code>status(HttpStatusCode(999, &quot;Hey!&quot;)</code></td>
+<td align="left">HTTPステータスコード（カスタム）を設定</td>
+</tr>
+<tr>
+<td align="left"><code>status()</code></td>
+<td align="left">現在設定されているHTTPステータスコードを取得</td>
+</tr>
+<tr>
+<td align="left"><code>header(&quot;X-Custom-Header&quot;, &quot;Hey!&quot;)</code></td>
+<td align="left">ヘッダーを設定</td>
+</tr>
+<tr>
+<td align="left"><code>etag(&quot;283882kdkks2j2j3h2j...&quot;)</code></td>
+<td align="left">etagを設定</td>
+</tr>
+<tr>
+<td align="left"><code>lastModified(ZonedDateTime.now())</code></td>
+<td align="left"><code>Last-Modified</code>ヘッダーを設定</td>
+</tr>
+<tr>
+<td align="left"><code>contentLength(1024L)</code></td>
+<td align="left"><code>Content-Length</code>を設定。通常は明示的に設定しなくても自動的に設定される。</td>
+</tr>
+<tr>
+<td align="left"><code>cacheControl(CacheControl.NoStore(CacheControl.Visibility.Private))</code></td>
+<td align="left"><code>Cache-Control</code>ヘッダーを設定</td>
+</tr>
+<tr>
+<td align="left"><code>expires(LocalDateTime.now())</code></td>
+<td align="left"><code>Expires</code>ヘッダーを設定</td>
+</tr>
+</table><ul>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/ETag">ETag | MDN</a></li>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Cache-Control">Cache-Control | MDN</a></li>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Expires">Expires | MDN</a></li>
+</ul>
+<h4 id="リダイレクト" class="uk-heading-bullet">リダイレクト</h4><p><code>response</code>を使ってリダイレクト処理を行うことができる。</p>
+<p><a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Redirections">リダイレクト | MDN</a></p>
+<p><code>respndRedirect</code>の第一引数はリダイレクト先で、第二引数の<code>permanent</code>にBooleanで恒久的か一時的かを設定できる。</p>
+<p>例えばこの様に実装できる。</p>
+<pre><code class="prettyprint linenums">routing {
+    get(&quot;/&quot;) {
+        call.respondRedirect(&quot;/redirect&quot;, true)
+    }
+    get(&quot;/redirect&quot;) {
+        call.respondText {
+            &quot;You Redirected&quot;
+        }
+    }
+}</code></pre>
+</body>
+</html>
