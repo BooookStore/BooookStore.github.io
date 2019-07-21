@@ -85,9 +85,15 @@
         }</style>
 </head>
 <body>
-<h1 id="Spring Web MVC" class="uk-heading-line"><span>Spring Web MVC</span></h1><h1 id="HelloWorld" class="uk-heading-line"><span>HelloWorld</span></h1><p><strong>更新日：2019.07.16</strong></p>
+<h1 id="Spring Web MVC" class="uk-heading-line"><span>Spring Web MVC</span></h1><ul>
+<li><a href="#helloworld">HelloWorld</a> 2019.07.20</li>
+</ul>
+<h1 id="HelloWorld" class="uk-heading-line"><span>HelloWorld</span></h1><p><strong>更新日：2019.07.20</strong></p>
 <p>Spring Framework の公式サイトには Guides というページがあって、いろいろなチュートリアルが載っている。その中に、Spring Web MVC を使ってウェブコンテンツを作ってみるものがあったのでやってみた。チュートリアルでは基本的なものが出来上がってるソースから始めるパターンと、フルスクラッチで作成するパターンがあるが今回はフルスクラッチで作っていく。</p>
-<p>まずプロジェクトの作成だが、Gradle、Maven、IDEのどれかを使用して作成することができる。今回はGradleを使ってIntelliJで作成していく。</p>
+<ul>
+<li><a href="https://spring.io/guides/gs/serving-web-content/">Serving Web Content with Spring MVC</a></li>
+</ul>
+<h2 id="Setting Gradle" class="uk-heading-line uk-heading-bullet"><span>Setting Gradle</span></h2><p>まずプロジェクトの作成だが、Gradle、Maven、IDEのどれかを使用して作成することができる。今回はGradleを使ってIntelliJで作成していく。</p>
 <p>手順に沿って作成したら以下の <code>build.gradle</code> になった。</p>
 <pre><code class="prettyprint linenums">buildscript {
     repositories {
@@ -129,6 +135,74 @@ dependencies {
 <p>詳しくは以下のページに載っているのであとでまとめてみようと思う。</p>
 <ul>
 <li><a href="https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/html/">Spring Boot gradle plugin</a></li>
+</ul>
+<h2 id="コントローラーの作成" class="uk-heading-line uk-heading-bullet"><span>コントローラーの作成</span></h2><p>SpringWebMVCでは、HTTPリクエストをコントローラーと呼ばれる役割を担うJavaクラスが受け取る仕組みになっている。コントローラーの役割をJavaクラスに付与するにはクラスに対して <code>@Controller</code> アノテーションを付与する。手順に従って作成すると、以下のようなコントローラーJavaクラスができた。</p>
+<pre><code class="prettyprint linenums">package hello;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class GreetingController {
+
+    @GetMapping(&quot;/greeting&quot;)
+    public String greeting(@RequestParam(name = &quot;name&quot;, required = false, defaultValue = &quot;World&quot;) String name, Model model) {
+        model.addAttribute(&quot;name&quot;, name);
+        return &quot;greeting&quot;;
+    }
+
+}</code></pre><p>ここでは少量のコードだが、様々なことをやっている。一つずつ見ていく。</p>
+<p>まず、 <code>@GetMapping</code> アノテーションは <code>/greeting</code> パスへのGETメソッドに対応するメソッドであることを示している。そのリクエストがくると、 <code>greeting</code> メソッドが呼び出されるわけだ。当然だが、GETメソッド以外にも対応できるように以下のアノテーションが用意されている。</p>
+<p><a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-requestmapping">Spring MVC | 1.3.2. Request Mapping</a></p>
+<ul>
+<li><code>@GetMapping</code></li>
+<li><code>@PostMapping</code></li>
+<li><code>@PutMapping</code></li>
+<li><code>@DeleteMapping</code></li>
+<li><code>@PatchMapping</code></li>
+</ul>
+<p>HTTPメソッドに対応したアノテーションがある一方で、 <code>@RequestMapping</code> というアノテーションのパラメーターにHTTPメソッドを明記するアノテーションも用意されている。</p>
+<p><code>@RequestParam</code> アノテーションでHTTPリクエストのパラメータをバインドする。ここでは <code>name</code> パラメータを <code>String name</code> にバインドしている。 <code>required</code> が <code>false</code> になっているため、必須のパラメータではない。送られてこなかった場合は <code>defaultValue</code> で示されている <code>World</code> がバインドされる。</p>
+<p>HTTPリクエストがバインドされた <code>name</code> 引数は、 <code>Model</code> と呼ばれるオブジェクトに <code>addAttribute</code> メソッドで渡している。こうすることで、 <code>name</code> を <code>View</code> に渡すことができる。Modelの説明は公式ドキュメントのハンドラーメソッドの引数一覧に書いてある。</p>
+<p><a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-methods">Spring MVC | 1.3.3 HandlerMethods</a></p>
+<p>このチュートリアルではHTMLのレンダリングにThymeleafを使用している。Thymeleafはサーバーサイドレンダリングライブラリの一種。以下のファイルを <code>src/main/resources/templates/greeting.html</code> に配置した。</p>
+<pre><code class="prettyprint linenums">&lt;!DOCTYPE HTML&gt;
+&lt;html xmlns:th=&quot;http://www.thymeleaf.org&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;Getting Started: Serving Web Content&lt;/title&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;/&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;p th:text=&quot;&#x27;Hello, &#x27; + ${name} + &#x27;!&#x27;&quot;/&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre><p><code>th:text</code> 属性を使って、Modelに渡したname値を出力している。</p>
+<h2 id="Webアプリの開発" class="uk-heading-line uk-heading-bullet"><span>Webアプリの開発</span></h2><p><a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#using-boot-devtools">Spring-boot-devtools</a>を使うことでWebアプリの開発に便利な機能を利用できる。</p>
+<ul>
+<li>ホットスワップ</li>
+<li>テンプレートエンジンのキャッシュ無効化</li>
+<li>ブラウザのライブロードの有効化</li>
+</ul>
+<h2 id="アプリケーションを実行可能にする" class="uk-heading-line uk-heading-bullet"><span>アプリケーションを実行可能にする</span></h2><p>作成したアプリケーションを実行できるようにするにはWARファイルとしてビルドし、サーバーに配置するといった方法があるが、簡単に動作をデモするのであればJavaの <code>main()</code> メソッドを以下のように用意する。このようにすることで、Springが組み込みTomcatサーバを用意し、アプリケーションを配置してくれる。</p>
+<pre><code class="prettyprint linenums">package hello;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}</code></pre><p><code>@SpringBootApplication</code> はいくつかの便利な機能を含んだアノテーション。</p>
+<ul>
+<li><code>@Configuration</code> ... Bean定義クラスであると示す。<a href="https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-java-basic-concepts">Spring Framework | 1.12.1</a></li>
+<li><code>@EnableAutoConfiguration</code> ... クラスパスを元にBeanを検索＆登録することを示す。 <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#getting-started-first-application-auto-configuration">Spring Boot 11.3.2</a></li>
+<li><code>@EnableEwbMvc</code> ... spring-webmvc がクラスパスに存在する場合付与される、アプリケーションんがWebアプリである事を示す。 <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-spring-mvc-auto-configuration">Spring Boot 29.1.1</a></li>
+<li><code>@ComponentScan</code> ... <code>hello</code>パッケージのコンポーネント、コンフィグレーション、サービスなどをBean登録する事を示す。 <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-controller">Spring Framework 1.10.3</a></li>
 </ul>
 
 </body>

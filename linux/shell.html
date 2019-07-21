@@ -1,0 +1,226 @@
+<html lang="ja">
+<head>
+    <title>shell</title>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- base -->
+    <style>
+        body {
+            padding: 10px;
+            background: white;
+        }
+    </style>
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/css/uikit.min.css"/>
+
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.6/js/uikit-icons.min.js"></script>
+
+    <!-- for prettyprint -->
+    <style>
+        li.L0, li.L1, li.L2, li.L3,
+        li.L5, li.L6, li.L7, li.L8 {
+            list-style-type: decimal !important;
+        }
+    </style>
+    <style>
+        pre {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background-color: #f5f7f9;
+        }
+
+        .prettyprint {
+            font-family: Menlo, "Bitstream Vera Sans Mono", "DejaVu Sans Mono", Monaco, Consolas, monospace;
+            font-size: 0.85em;
+            border: 0 !important;
+        }
+
+        .pln {
+            color: black;
+        }
+
+        ol.linenums {
+            margin-top: 0;
+            margin-bottom: 0;
+            background-color: #f5f7f9;
+            color: black;
+        }
+
+        li.L0,
+        li.L1,
+        li.L2,
+        li.L3,
+        li.L4,
+        li.L5,
+        li.L6,
+        li.L7,
+        li.L8,
+        li.L9 {
+            padding-left: 1em;
+            background-color: #f5f7f9;
+            list-style-type: decimal;
+        }
+
+        @media screen {
+            .str,
+            .kwd,
+            .com,
+            .typ,
+            .lit,
+            .pun,
+            .opn,
+            .clo,
+            .tag,
+            .atn,
+            .atv,
+            .dec,
+            .var,
+            .fun {
+                color: black;
+            }
+        }</style>
+</head>
+<body>
+<h1 id="Shell" class="uk-heading-line"><span>Shell</span></h1><ul>
+<li><a href="https://www.gnu.org/software/bash/">GNU Bash | 公式サイト</a></li>
+<li><a href="https://www.gnu.org/software/bash/manual/">GNU Bash | Manual</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="#%E6%A6%82%E8%A6%81">概要</a> 2019.07.21</li>
+<li><a href="#%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89">コマンド</a> 2019.07.21<ul>
+<li><a href="#%E5%86%85%E9%83%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89">内部コマンド</a> 2019.07.21</li>
+<li><a href="#%E5%A4%96%E9%83%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89">外部コマンド</a> 2019.07.21</li>
+</ul>
+</li>
+<li><a href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">設定ファイル</a> 2019.07.21</li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a> 2019.07.21</li>
+</ul>
+<h1 id="概要" class="uk-heading-line"><span>概要</span></h1><p>Shellとは、Linuxカーネルに対するユーザーインターフェイスを提供するソフトウェアのこと。Shellとは「殻」という意味の単語であり、Linuxカーネルを「殻」で包んで、ユーザーに対して操作を提供しているようなイメージからきているらしい。</p>
+<p>以降のサンプルなどは明示的な説明がない限り以下の環境下での実行結果。</p>
+<ul>
+<li>OS : CentOS Linux release 7.6.1810 (Core)</li>
+<li>Shell : GNU bash, version 4.2.46(2)-release (x86-64-redhat-linux-gnu)</li>
+</ul>
+<h1 id="種類" class="uk-heading-line"><span>種類</span></h1><p>Shellはいくつかの種類が存在する。</p>
+<p>以下はUnixシェルの一部。</p>
+<ul>
+<li>Bourne-Again shell (bash)</li>
+<li>KornShell (ksh)</li>
+<li>Z Shell (zsh)</li>
+<li>C Shell (csh)</li>
+</ul>
+<p>それぞれの違いや、使い方について後で詳しくみていきたい。以降では <code>Bash</code> を使用してそれぞれの説明をしていく。</p>
+<h1 id="コマンド" class="uk-heading-line"><span>コマンド</span></h1><p>コマンドには大きく二つの種類が存在する。</p>
+<h2 id="内部コマンド" class="uk-heading-line uk-heading-bullet"><span>内部コマンド</span></h2><p>組み込みコマンドはシェルに組み込まれている基本的なコマンド。Bashの内部コマンドは <code>help</code> コマンドより一覧を表示できる。同時に、Bashのバージョンやコマンドの使い方についても簡単な説明を得られる。</p>
+<pre><code class="prettyprint linenums">[root@centos7-1 ~]# help
+GNU bash, バージョン 4.2.46(2)-release (x86_64-redhat-linux-gnu)
+これらのシェルコマンドは内部で定義されています。&#x60;help&#x27; と入力して一覧を参照してください。
+&#x60;help 名前&#x27; と入力すると &#x60;名前&#x27; という関数のより詳しい説明が得られます。
+&#x27;info bash&#x27; を使用するとシェル全般のより詳しい説明が得られます。
+&#x60;man -k&#x27; または info を使用すると一覧にないコマンドのより詳しい説明が得られます。
+
+名前の後にアスタリスク (*) がある場合はそのコマンドが無効になっていることを意味します。
+
+ job_spec [&amp;]                                          history [-c] [-d offset] [n] または history -an&gt;
+ (( expression ))                                      if COMMANDS; then COMMANDS; [ elif COMMANDS; then &gt;
+ . filename [arguments]                                jobs [-lnprs] [jobspec ...] または jobs -x comm&gt;
+ :                                                     kill [-s sigspec | -n signum | -sigspec] pid | job&gt;
+ [ arg... ]                                            let 引数 [引数 ...]
+ [[ expression ]]                                      local [option] name[=value] ...
+ alias [-p] [name[=value] ... ]                        logout [n]
+ bg [job_spec ...]                                     mapfile [-n count] [-O origin] [-s count] [-t] [-u&gt;
+ bind [-lpvsPVS] [-m keymap] [-f filename] [-q name]&gt;  popd [-n] [+N | -N]
+ break [n]                                             printf [-v var] format [arguments]
+ builtin [shell-builtin [arg ...]]                     pushd [-n] [+N | -N | dir]
+ caller [expr]                                         pwd [-LP]
+ case WORD in [PATTERN [| PATTERN]...) COMMANDS ;;].&gt;  read [-ers] [-a array] [-d delim] [-i text] [-n nc&gt;
+ cd [-L|[-P [-e]]] [dir]                               readarray [-n count] [-O origin] [-s count] [-t] [&gt;
+ command [-pVv] command [arg ...]                      readonly [-aAf] [name[=value] ...] or readonly -p
+ compgen [-abcdefgjksuv] [-o option]  [-A action] [-&gt;  return [n]
+ complete [-abcdefgjksuv] [-pr] [-DE] [-o option] [-&gt;  select NAME [in WORDS ... ;] do COMMANDS; done
+ compopt [-o|+o option] [-DE] [name ...]               set [-abefhkmnptuvxBCHP] [-o option-name] [--] [ar&gt;
+ continue [n]                                          shift [n]
+ coproc [NAME] command [redirections]                  shopt [-pqsu] [-o] [optname ...]
+ declare [-aAfFgilrtux] [-p] [name[=value] ...]        source filename [arguments]
+ dirs [-clpv] [+N] [-N]                                suspend [-f]
+ disown [-h] [-ar] [jobspec ...]                       test [expr]
+ echo [-neE] [arg ...]                                 time [-p] pipeline
+ enable [-a] [-dnps] [-f filename] [name ...]          times
+ eval [arg ...]                                        trap [-lp] [[arg] signal_spec ...]
+ exec [-cl] [-a name] [command [arguments ...]] [red&gt;  true
+ exit [n]                                              type [-afptP] name [name ...]
+ export [-fn] [name[=value] ...] または export -p&gt;  typeset [-aAfFgilrtux] [-p] name[=value] ...
+ false                                                 ulimit [-SHacdefilmnpqrstuvx] [limit]
+ fc [-e ename] [-lnr] [first] [last] または fc -s&gt;  umask [-p] [-S] [mode]
+ fg [job_spec]                                         unalias [-a] name [name ...]
+ for NAME [in WORDS ... ] ; do COMMANDS; done          unset [-f] [-v] [name ...]
+ for (( exp1; exp2; exp3 )); do COMMANDS; done         until COMMANDS; do COMMANDS; done
+ function name { COMMANDS ; } または name () { CO&gt;  変数 - 変数の名前とその意味
+ getopts optstring name [arg]                          wait [id]
+ hash [-lr] [-p pathname] [-dt] [name ...]             while COMMANDS; do COMMANDS; done
+ help [-dms] [pattern ...]                             { COMMANDS ; }</code></pre><h2 id="外部コマンド" class="uk-heading-line uk-heading-bullet"><span>外部コマンド</span></h2><p>外部コマンドは内部コマンド以外のコマンド群。Shellは外部コマンドを、設定されている <code>PATH</code> と呼ばれる環境変数を元に探して実行する。よくパスを通すなんて言うけど、それはコマンドを <code>PATH</code> に追加する、または <code>PATH</code> に指定されているディレクトリ配下に配置する事を言う。</p>
+<p><code>PATH</code> は以下のコマンドで確認できる。</p>
+<pre><code class="prettyprint linenums">[root@centos7-1 ~]# echo $PATH
+/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/root/bin</code></pre><p><code>:</code> は区切りを表しているので、上記は以下のディレクトリが外部コマンドを検索しにいくディレクトリになっている。</p>
+<ul>
+<li>/usr/local/bin</li>
+<li>/usr/local/sbin</li>
+<li>/usr/bin</li>
+<li>/usr/sbin</li>
+<li>/bin</li>
+<li>/sbin</li>
+<li>/root/bin</li>
+</ul>
+<p>試しに <code>/usr/bin</code> の中身を覗いてみた。</p>
+<pre><code class="prettyprint linenums">[root@centos7-1 ~]# ls /usr/bin
+ControlPanel                         gtar                         pwmake
+Mail                                 gtbl                         pwscore
+VBoxClient                           gtf                          pydoc
+VBoxClient-all                       gtk-launch                   pygtk-demo
+VBoxControl                          gtk-query-immodules-2.0-64   pyinotify
+VGAuthService                        gtk-query-immodules-3.0-64   python
+WebKitWebDriver                      gtk-update-icon-cache        python2
+X                                    gtroff                       python2.7
+Xorg                                 gucharmap                    qemu-ga
+Xvnc                                 gunzip                       qemu-img
+[                                    gupnp-dlna-info-2.0          qemu-io
+a2p                                  gupnp-dlna-ls-profiles-2.0   qemu-nbd
+abrt-action-analyze-backtrace        gvfs-cat                     qmi-network
+abrt-action-analyze-c                gvfs-copy                    qmicli
+abrt-action-analyze-ccpp-local       gvfs-info                    quota
+abrt-action-analyze-core             gvfs-less                    quotasync
+abrt-action-analyze-oops             gvfs-ls                      ranlib
+
+〜以下略〜</code></pre><h2 id="設定ファイル" class="uk-heading-line uk-heading-bullet"><span>設定ファイル</span></h2><ul>
+<li><a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html#Bash-Startup-Files">GNU Bash | 6.2 Bash Startup Files</a></li>
+</ul>
+<p>Bashにはいくつかの設定ファイルが存在する。これらの設定ファイルは特定のディレクトリに配置しておけば、起動時に読み込まれBashを初期化することが出来る。</p>
+<p>インタラクティブログインシェルとしてBashが起動すると、以下のファイルを順番に読み込む。</p>
+<ol>
+<li><code>/etc/profile</code> ... システム環境特有の設定が記述されている。</li>
+<li><code>~/.bash_profile</code> ... 個人用の初期化ファイル。</li>
+<li><code>~/.bash_login</code> ... ログイン時に読み込まれるファイル？</li>
+<li><code>~/.profile</code> ... 一番最後に読み込まれる個人用初期化ファイル？</li>
+</ol>
+<p>非インタラクティブログインシェルとしてBashが起動すると、以下のファイルを読み込む。</p>
+<p><code>~/.bashrc</code> ... 対話シェルごとに実行される、個人用のファイル。</p>
+<p>しかし、一般的には <code>~/.bash_profile</code> には <code>~/.bashrc</code> が存在するならば読み込むと書かれているので、インタラクティブログインシェルとして起動したとしても <code>~/.bashrc</code> が読み込まれる。試しに <code>~/.bash_profile</code> を調べてみると以下のように書いてあった。</p>
+<pre><code class="prettyprint linenums">if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi</code></pre><p>初期化ファイルがたくさんあるが、基本的には <code>~/.bashrc</code> に個人用の設定をするでいいらしい。</p>
+<ul>
+<li><a href="https://qiita.com/dark-space/items/cf25001f89c41341a9fd">.bash_profileと.bashrcなんて使い分けなくてよかったんや！ | Qiita</a></li>
+</ul>
+<h1 id="参考" class="uk-heading-line"><span>参考</span></h1><ul>
+<li><a href="https://ja.wikipedia.org/wiki/%E3%82%B7%E3%82%A7%E3%83%AB">シェル | wikipedia</a></li>
+<li><a href="https://www.sbcr.jp/product/4797397642/">本気で学ぶ Linux実践入門 サーバ運用のための業務レベル管理術</a></li>
+<li><a href="https://www.sbcr.jp/product/4797380941/">新しいLinuxの教科書</a></li>
+</ul>
+
+</body>
+</html>
