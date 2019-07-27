@@ -85,23 +85,29 @@
         }</style>
 </head>
 <body>
-<h1 id="Shell" class="uk-heading-line"><span>Shell</span></h1><ul>
+<h1 id="Bash" class="uk-heading-line"><span>Bash</span></h1><ul>
 <li><a href="https://www.gnu.org/software/bash/">GNU Bash | 公式サイト</a></li>
 <li><a href="https://www.gnu.org/software/bash/manual/">GNU Bash | Manual</a></li>
+<li><a href="https://ja.wikipedia.org/wiki/Bash">Bash | Wikipedia</a></li>
 </ul>
 <hr>
 <ul>
 <li><a href="#%E6%A6%82%E8%A6%81">概要</a> 2019.07.21</li>
-<li><a href="#%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89">コマンド</a> 2019.07.21<ul>
+<li><a href="#%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89">コマンド</a> 2019.07.27<ul>
 <li><a href="#%E5%86%85%E9%83%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89">内部コマンド</a> 2019.07.21</li>
 <li><a href="#%E5%A4%96%E9%83%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89">外部コマンド</a> 2019.07.21</li>
 </ul>
 </li>
 <li><a href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">設定ファイル</a> 2019.07.21</li>
-<li><a href="#%E5%8F%82%E8%80%83">参考</a> 2019.07.21</li>
+<li><a href="#Bash%E3%81%AE%E5%A4%89%E6%95%B0">Bashの変数</a> 2019.07.27<ul>
+<li><a href="#Bash%E3%81%A7%E4%BD%BF%E3%82%8F%E3%82%8C%E3%82%8B%E4%BB%A3%E8%A1%A8%E7%9A%84%E3%81%AA%E5%A4%89%E6%95%B0">Bashで使われる代表的な変数</a> 2019.07.27</li>
+</ul>
+</li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a> 2019.07.27</li>
 </ul>
 <h1 id="概要" class="uk-heading-line"><span>概要</span></h1><p><strong>更新日：2019.07.21</strong></p>
 <p>Shellとは、Linuxカーネルに対するユーザーインターフェイスを提供するソフトウェアのこと。Shellとは「殻」という意味の単語であり、Linuxカーネルを「殻」で包んで、ユーザーに対して操作を提供しているようなイメージからきているらしい。</p>
+<p>BashはShellの一種。Bourne Shellの代替として作成されたので機能を引き継いでいる面がある。</p>
 <p>以降のサンプルなどは明示的な説明がない限り以下の環境下での実行結果。</p>
 <ul>
 <li>OS : CentOS Linux release 7.6.1810 (Core)</li>
@@ -117,8 +123,8 @@
 <li>C Shell (csh)</li>
 </ul>
 <p>それぞれの違いや、使い方について後で詳しくみていきたい。以降では <code>Bash</code> を使用してそれぞれの説明をしていく。</p>
-<h1 id="コマンド" class="uk-heading-line"><span>コマンド</span></h1><p><strong>更新日：2019.07.21</strong></p>
-<p>コマンドには大きく二つの種類が存在する。</p>
+<h1 id="コマンド" class="uk-heading-line"><span>コマンド</span></h1><p><strong>更新日：2019.07.27</strong></p>
+<p>コマンドには内部コマンドと外部コマンドに分類される。 <code>type</code> コマンドにより対象のコマンドの分類を確認することが出来る。</p>
 <h2 id="内部コマンド" class="uk-heading-line uk-heading-bullet"><span>内部コマンド</span></h2><p>組み込みコマンドはシェルに組み込まれている基本的なコマンド。Bashの内部コマンドは <code>help</code> コマンドより一覧を表示できる。同時に、Bashのバージョンやコマンドの使い方についても簡単な説明を得られる。</p>
 <pre><code class="prettyprint linenums">[root@centos7-1 ~]# help
 GNU bash, バージョン 4.2.46(2)-release (x86_64-redhat-linux-gnu)
@@ -220,9 +226,77 @@ fi</code></pre><p>初期化ファイルがたくさんあるが、基本的に�
 <ul>
 <li><a href="https://qiita.com/dark-space/items/cf25001f89c41341a9fd">.bash_profileと.bashrcなんて使い分けなくてよかったんや！ | Qiita</a></li>
 </ul>
-<h1 id="参考" class="uk-heading-line"><span>参考</span></h1><p><strong>更新日：2019.07.21</strong></p>
+<h1 id="Bashの変数" class="uk-heading-line"><span>Bashの変数</span></h1><p><strong>更新日：2019.07.27</strong></p>
+<p>Bashの変数にはBourne Shellと同様に使えるものと、Bash独自のものが存在する。</p>
+<p>一般に、子プロセスに引き継がれるものを環境変数、引き継がれないものをシェル変数と呼ぶ。環境変数は <code>env</code> <code>printenv</code> <code>export -p</code> コマンドで、シェル変数は <code>set</code> コマンドで一覧表示できる。</p>
+<p>シェル変数の設定は以下の書式で行うことが出来る。注意点は <code>=</code> にスペースを入れないこと。</p>
+<p><a href="https://shellscript.sunone.me/variable.html">UNIX &amp; Linux コマンド・シェルスクリプトリファレンス | 変数を使用する</a></p>
+<pre><code class="prettyprint linenums"># OK
+変数名=値
+
+# NG
+変数名 = 値</code></pre><p>シェル変数を使うには以下の書式で行う。</p>
+<pre><code class="prettyprint linenums">$変数名
+
+# または
+
+${変数名}</code></pre><p>シェル変数の削除は <code>unset</code> コマンドで行う。</p>
+<pre><code class="prettyprint linenums">unset 変数名</code></pre><p>例えばこんな感じ。</p>
+<pre><code class="prettyprint linenums">[root@centos7-1 ~]# NAME=BOOKSTORE
+[root@centos7-1 ~]# echo ${NAME}
+BOOKSTORE
+[root@centos7-1 ~]# echo ${NAME}
+BOOKSTORE
+[root@centos7-1 ~]# unset NAME
+[root@centos7-1 ~]# echo ${NAME}
+</code></pre><p>環境変数の設定は <code>export</code> コマンドで行う。注意点は環境変数だけを設定することはできず、環境変数は必ずシェル変数として設定されていなければならないこと。</p>
+<pre><code class="prettyprint linenums">export シェル変数
+
+# または
+
+# シェル変数の設定と、環境変数の設定を同時に行う
+export 変数名=値</code></pre><p>環境変数を使う方法はシェル変数と同じ。</p>
+<pre><code class="prettyprint linenums">$変数名
+
+# または
+
+${変数名}</code></pre><p>環境変数を削除するには <code>export -n</code> コマンドで行う。</p>
+<pre><code class="prettyprint linenums">export -n 変数名</code></pre><p>例えばこんな感じ。</p>
+<pre><code class="prettyprint linenums">[root@centos7-1 ~]# export -p | grep FOGE
+[root@centos7-1 ~]# export FOGE=ABC
+[root@centos7-1 ~]# export -p | grep FOGE
+declare -x FOGE=&quot;ABC&quot;
+[root@centos7-1 ~]# export -n FOGE
+[root@centos7-1 ~]# export -p | grep FOGE
+[root@centos7-1 ~]# set | grep FOGE
+FOGE=ABC</code></pre><p>これら変数の設定は永続化されることはなく、Bashを終了すると無くなってしまう。そのため<a href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">設定ファイル</a>に変数の設定を記述することで、Bash起動時に変数を設定するようにする。</p>
+<h2 id="Bashで使われる代表的な変数" class="uk-heading-line uk-heading-bullet"><span>Bashで使われる代表的な変数</span></h2><p><strong>更新日：2019.07.27</strong></p>
+<p>変数の中にはBashから使用されるものがある。</p>
+<p><a href="https://www.gnu.org/software/bash/manual/html_node/Shell-Variables.html#Shell-Variables">GNU Bash | 5 Shell Variables</a></p>
+<table class="uk-table uk-table-divider"><tr>
+<th align="left">変数名</th>
+<th align="left">内容</th>
+</tr>
+<tr>
+<td align="left">PS1</td>
+<td align="left">プロンプトの設定</td>
+</tr>
+<tr>
+<td align="left">PATH</td>
+<td align="left">外部コマンドの検索パス</td>
+</tr>
+<tr>
+<td align="left">LANG</td>
+<td align="left">ロケール</td>
+</tr>
+<tr>
+<td align="left">HOME</td>
+<td align="left">ホームディレクトリ</td>
+</tr>
+</table><h1 id="参考" class="uk-heading-line"><span>参考</span></h1><p><strong>更新日：2019.07.27</strong></p>
 <ul>
 <li><a href="https://ja.wikipedia.org/wiki/%E3%82%B7%E3%82%A7%E3%83%AB">シェル | wikipedia</a></li>
+<li><a href="https://shellscript.sunone.me/">シェルスクリプトリファレンス</a></li>
 <li><a href="https://www.sbcr.jp/product/4797397642/">本気で学ぶ Linux実践入門 サーバ運用のための業務レベル管理術</a></li>
 <li><a href="https://www.sbcr.jp/product/4797380941/">新しいLinuxの教科書</a></li>
 </ul>
