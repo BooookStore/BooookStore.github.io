@@ -98,7 +98,11 @@
 <li><a href="#%E5%A4%96%E9%83%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89">外部コマンド</a> 2019.07.21</li>
 </ul>
 </li>
-<li><a href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">設定ファイル</a> 2019.07.21</li>
+<li><a href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">設定ファイル</a> 2019.07.21<ul>
+<li><a href="#%E3%82%B7%E3%82%A7%E3%83%AB%E5%A4%89%E6%95%B0%E3%81%AE%E8%A8%AD%E5%AE%9A">シェル変数の設定</a> 2019.07.27</li>
+<li><a href="#%E7%92%B0%E5%A2%83%E5%A4%89%E6%95%B0%E3%81%AE%E8%A8%AD%E5%AE%9A">環境変数の設定</a> 2019.07.27</li>
+</ul>
+</li>
 <li><a href="#Bash%E3%81%AE%E5%A4%89%E6%95%B0">Bashの変数</a> 2019.07.27<ul>
 <li><a href="#Bash%E3%81%A7%E4%BD%BF%E3%82%8F%E3%82%8C%E3%82%8B%E4%BB%A3%E8%A1%A8%E7%9A%84%E3%81%AA%E5%A4%89%E6%95%B0">Bashで使われる代表的な変数</a> 2019.07.27</li>
 </ul>
@@ -229,8 +233,11 @@ fi</code></pre><p>初期化ファイルがたくさんあるが、基本的に�
 <h1 id="Bashの変数" class="uk-heading-line"><span>Bashの変数</span></h1><p><strong>更新日：2019.07.27</strong></p>
 <p>Bashの変数にはBourne Shellと同様に使えるものと、Bash独自のものが存在する。</p>
 <p>一般に、子プロセスに引き継がれるものを環境変数、引き継がれないものをシェル変数と呼ぶ。環境変数は <code>env</code> <code>printenv</code> <code>export -p</code> コマンドで、シェル変数は <code>set</code> コマンドで一覧表示できる。</p>
+<h2 id="シェル変数の設定" class="uk-heading-line uk-heading-bullet"><span>シェル変数の設定</span></h2><p><strong>更新日：2019.07.27</strong></p>
 <p>シェル変数の設定は以下の書式で行うことが出来る。注意点は <code>=</code> にスペースを入れないこと。</p>
-<p><a href="https://shellscript.sunone.me/variable.html">UNIX &amp; Linux コマンド・シェルスクリプトリファレンス | 変数を使用する</a></p>
+<ul>
+<li><a href="https://shellscript.sunone.me/variable.html">UNIX &amp; Linux コマンド・シェルスクリプトリファレンス | 変数を使用する</a></li>
+</ul>
 <pre><code class="prettyprint linenums"># OK
 変数名=値
 
@@ -249,7 +256,8 @@ BOOKSTORE
 BOOKSTORE
 [root@centos7-1 ~]# unset NAME
 [root@centos7-1 ~]# echo ${NAME}
-</code></pre><p>環境変数の設定は <code>export</code> コマンドで行う。注意点は環境変数だけを設定することはできず、環境変数は必ずシェル変数として設定されていなければならないこと。</p>
+</code></pre><h2 id="環境変数の設定" class="uk-heading-line uk-heading-bullet"><span>環境変数の設定</span></h2><p><strong>更新日：2019.07.27</strong></p>
+<p>環境変数の設定は <code>export</code> コマンドで行う。注意点は環境変数だけを設定することはできず、環境変数は必ずシェル変数として設定されていなければならないこと。</p>
 <pre><code class="prettyprint linenums">export シェル変数
 
 # または
@@ -272,7 +280,9 @@ declare -x FOGE=&quot;ABC&quot;
 FOGE=ABC</code></pre><p>これら変数の設定は永続化されることはなく、Bashを終了すると無くなってしまう。そのため<a href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">設定ファイル</a>に変数の設定を記述することで、Bash起動時に変数を設定するようにする。</p>
 <h2 id="Bashで使われる代表的な変数" class="uk-heading-line uk-heading-bullet"><span>Bashで使われる代表的な変数</span></h2><p><strong>更新日：2019.07.27</strong></p>
 <p>変数の中にはBashから使用されるものがある。</p>
-<p><a href="https://www.gnu.org/software/bash/manual/html_node/Shell-Variables.html#Shell-Variables">GNU Bash | 5 Shell Variables</a></p>
+<ul>
+<li><a href="https://www.gnu.org/software/bash/manual/html_node/Shell-Variables.html#Shell-Variables">GNU Bash | 5 Shell Variables</a></li>
+</ul>
 <table class="uk-table uk-table-divider"><tr>
 <th align="left">変数名</th>
 <th align="left">内容</th>
